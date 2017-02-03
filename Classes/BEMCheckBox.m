@@ -113,9 +113,11 @@
     
     [self.checkMarkLayer removeFromSuperlayer];
     self.checkMarkLayer = nil;
-    
-    [self setNeedsDisplay];
-    [self layoutIfNeeded];
+
+    if(self.window) {
+        [self setNeedsDisplay];
+        [self layoutIfNeeded];
+    }
 }
 
 #pragma mark Setters
