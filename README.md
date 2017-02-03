@@ -23,6 +23,7 @@
 * [**Documentation**](#documentation)
   * [Enabling / Disabling the Checkbox](#enabling--disabling-the-checkbox) 
   * [Reloading](#reloading)
+  * [Group / Radio Button Functionality](#group--radio-button-functionality)
   * [Delegate] (#delegate)
   * [Customization](#customization)
 
@@ -62,7 +63,7 @@ The easiest way to install **BEMCheckBox** is to use <a href="http://cocoapods.o
 #### Carthage
 [Carthage](https://github.com/Carthage/Carthage) is a decentralized dependency manager that builds your dependencies and provides you with binary frameworks.
 
-Run `carthage update` to build the framework and drag the built `BEMCheckBox.framework` into your Xcode project.
+Run `carthage update` after adding **BEMCheckBox** to your Cartfile to build the framework. Drag the built `BEMCheckBox.framework` into your Xcode project.
 
 #### Manually	
 Finally, you can install **BEMCheckBox** manually. Simply drag and drop the *Classes* folder into your Xcode project. When you do so, make sure to check the "*Copy items into destination group's folder*" box.
@@ -114,6 +115,25 @@ The instance method `reload` lets you redraw the entire checkbox, keeping the cu
 Example usage:  
 ```objective-c
 [self.myCheckBox reload]
+```
+
+### Group / Radio Button Functionality
+**BEMCheckBox**es can easily be grouped together to form radio button functionality. This will automatically manage the state of each checkbox in the group, so that only one is selected at a time, and can optionally require that the group has a selection at all times.
+
+```objective-c
+self.group = [BEMCheckBoxGroup groupWithCheckBoxes:@[self.checkBox1, self.checkBox2, self.checkBox3]];
+self.group.selectedCheckBox = self.checkBox2; // Optionally set which checkbox is pre-selected
+self.group.mustHaveSelection = YES; // Define if the group must always have a selection
+```
+
+To see which checkbox is selected in that group, just ask for it:
+```objective-c
+BEMCheckBox *selection = self.group.selectedCheckBox;
+```
+
+To manually update the selection for a group, just set it:
+```objective-c
+self.group.selectedCheckBox = self.checkBox1;
 ```
 
 ### Delegate
@@ -184,4 +204,3 @@ The possible values for `onAnimationType` and `offAnimationType`.
 
 - `BEMAnimationTypeFade`
 <p align="left"><img src="http://s24.postimg.org/3n1rre1cx/BEMAnimation_Type_Fade.gif"/></p>
-

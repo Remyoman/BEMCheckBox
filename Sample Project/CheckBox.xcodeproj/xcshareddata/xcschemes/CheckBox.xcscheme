@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0700"
+   LastUpgradeVersion = "0800"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -49,6 +49,16 @@
                BlueprintIdentifier = "C32537251B9231780059F394"
                BuildableName = "CheckBoxTests.xctest"
                BlueprintName = "CheckBoxTests"
+               ReferencedContainer = "container:CheckBox.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "FC76C2411D7A121200EE3AA4"
+               BuildableName = "CheckBoxUITests.xctest"
+               BlueprintName = "CheckBoxUITests"
                ReferencedContainer = "container:CheckBox.xcodeproj">
             </BuildableReference>
          </TestableReference>

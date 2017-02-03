@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "BEMCheckBoxGroup.h"
 
 @protocol BEMCheckBoxDelegate;
 
@@ -23,18 +24,15 @@ typedef NS_ENUM(NSInteger, BEMBoxType) {
     BEMBoxTypeSquare
 };
 
-#import "BEMPathManager.h"
-#import "BEMAnimationManager.h"
-
 // Tell the compiler to assume that no method should have a NULL value
 NS_ASSUME_NONNULL_BEGIN
 
 /**  Tasteful Checkbox for iOS.
  */
 #if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_9_3
-IB_DESIGNABLE @interface BEMCheckBox : UIView <CAAnimationDelegate>
+IB_DESIGNABLE @interface BEMCheckBox : UIControl <CAAnimationDelegate>
 #else
-IB_DESIGNABLE @interface BEMCheckBox : UIView
+IB_DESIGNABLE @interface BEMCheckBox : UIControl
 #endif
 
 /** The different type of animations available.
@@ -100,6 +98,10 @@ typedef NS_ENUM(NSInteger, BEMAnimationType) {
  */
 @property (strong, nonatomic) IBInspectable UIColor *onFillColor;
 
+/** The color of the inside of the box when it is Off.
+ */
+@property (strong, nonatomic) IBInspectable UIColor *offFillColor;
+
 /** The color of the check mark when it is On.
  */
 @property (strong, nonatomic) IBInspectable UIColor *onCheckColor;
@@ -107,6 +109,10 @@ typedef NS_ENUM(NSInteger, BEMAnimationType) {
 /** The color of the box when the checkbox is Off.
  */
 @property (strong, nonatomic) IBInspectable UIColor *tintColor;
+
+/** The group this box is associated with.
+ */
+@property (weak, nonatomic, nullable, readonly) BEMCheckBoxGroup *group;
 
 /** The type of box.
  * @see BEMBoxType. 
@@ -150,7 +156,7 @@ typedef NS_ENUM(NSInteger, BEMAnimationType) {
 /** Sent to the delegate every time the check box gets tapped.
  * @discussion This method gets triggered after the properties are updated (on), but before the animations, if any, are completed.
  * @seealso animationDidStopForCheckBox:
- * @param checkBox: The BEMCheckBox instance that has been tapped.
+ * @param checkBox The BEMCheckBox instance that has been tapped.
  */
 - (void)didTapCheckBox:(BEMCheckBox*)checkBox;
 
@@ -158,7 +164,7 @@ typedef NS_ENUM(NSInteger, BEMAnimationType) {
 /** Sent to the delegate every time the check box finishes being animated.
  * @discussion This method gets triggered after the properties are updated (on), and after the animations are completed. It won't be triggered if no animations are started.
  * @seealso didTapCheckBox:
- * @param checkBox: The BEMCheckBox instance that was animated.
+ * @param checkBox The BEMCheckBox instance that was animated.
  */
 - (void)animationDidStopForCheckBox:(BEMCheckBox *)checkBox;
 

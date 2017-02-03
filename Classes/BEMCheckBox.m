@@ -9,6 +9,7 @@
 #import "BEMCheckBox.h"
 #import "BEMAnimationManager.h"
 #import "BEMPathManager.h"
+#import "BEMCheckBoxGroup.h"
 
 @interface BEMCheckBox ()
 
@@ -31,6 +32,18 @@
 /** The BEMPathManager object used to generate paths.
  */
 @property (strong, nonatomic) BEMPathManager *pathManager;
+
+/** The group this box is associated with.
+ */
+@property (weak, nonatomic, nullable) BEMCheckBoxGroup *group;
+
+@end
+
+/** Defines private methods that we can call to update our group's status.
+ */
+@interface BEMCheckBoxGroup ()
+
+- (void)_checkBoxSelectionChanged:(BEMCheckBox *)checkBox;
 
 @end
 
@@ -55,6 +68,7 @@
     _hideBox = NO;
     _onTintColor = [UIColor colorWithRed:0 green:122.0/255.0 blue:255/255 alpha:1];
     _onFillColor = [UIColor clearColor];
+    _offFillColor = [UIColor clearColor];
     _onCheckColor = [UIColor colorWithRed:0 green:122.0/255.0 blue:255/255 alpha:1];
     _tintColor = [UIColor lightGrayColor];
     _lineWidth = 2.0;
@@ -105,7 +119,7 @@
 }
 
 #pragma mark Setters
-- (void)setOn:(BOOL)on animated:(BOOL)animated {
+- (void)_setOn:(BOOL)on animated:(BOOL)animated notifyGroup:(BOOL)notifyGroup {
     _on = on;
     
     [self drawEntireCheckBox];
@@ -122,6 +136,14 @@
             [self.checkMarkLayer removeFromSuperlayer];
         }
     }
+    
+    if(notifyGroup){
+        [self.group _checkBoxSelectionChanged:self];
+    }
+}
+
+- (void)setOn:(BOOL)on animated:(BOOL)animated {
+    [self _setOn:on animated:animated notifyGroup:YES];
 }
 
 - (void)setOn:(BOOL)on {
@@ -164,6 +186,11 @@
     [self reload];
 }
 
+- (void)setOffFillColor:(UIColor *)offFillColor {
+    _offFillColor = offFillColor;
+    [self reload];
+}
+
 - (void)setOnCheckColor:(UIColor *)onCheckColor {
     _onCheckColor = onCheckColor;
     [self reload];
@@ -171,10 +198,16 @@
 
 #pragma mark Gesture Recognizer
 - (void)handleTapCheckBox:(UITapGestureRecognizer *)recognizer {
+    // If we have a group that requires a selection, and we're already selected, don't allow a deselection
+    if(self.group && self.group.mustHaveSelection && self.on){
+        return;
+    }
+    
     [self setOn:!self.on animated:YES];
     if ([self.delegate respondsToSelector:@selector(didTapCheckBox:)]) {
         [self.delegate didTapCheckBox:self];
     }
+    [self sendActionsForControlEvents:UIControlEventValueChanged];
 }
 
 #pragma  mark - Helper methods -
@@ -228,10 +261,9 @@
     self.offBoxLayer = [CAShapeLayer layer];
     self.offBoxLayer.frame = self.bounds;
     self.offBoxLayer.path = [self.pathManager pathForBox].CGPath;
-    self.offBoxLayer.fillColor = [UIColor clearColor].CGColor;
+    self.offBoxLayer.fillColor = self.offFillColor.CGColor;
     self.offBoxLayer.strokeColor = self.tintColor.CGColor;
     self.offBoxLayer.lineWidth = self.lineWidth;
-    
     self.offBoxLayer.rasterizationScale = 2.0 * [UIScreen mainScreen].scale;
     self.offBoxLayer.shouldRasterize = YES;
     
